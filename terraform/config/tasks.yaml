@@ -1,0 +1,61 @@
+# =============================================================================
+# Task Definitions
+# =============================================================================
+#
+# Add new tasks by appending entries to this file. Both DEV and PROD
+# environments read from this shared config so schemas stay in sync.
+#
+# Required fields:
+#   schema        — Schema this task belongs to
+#   comment       — Description of the task
+#   warehouse     — Warehouse name placeholder: use {warehouse} to be replaced
+#                   with the environment-specific warehouse at apply time
+#   schedule      — Cron expression or interval (e.g. "USING CRON 0 6 * * * UTC"
+#                   or "5 MINUTE")
+#   sql_statement — The SQL to execute
+#                   Use {database} as a placeholder — it will be replaced with
+#                   the environment-specific database name at apply time.
+#
+# Optional fields:
+#   enabled       — Whether the task starts enabled (default: false).
+#                   Set to true only after verifying it works.
+#   after         — Key of another task in this file that this task runs after
+#                   (for task trees / DAGs). Omit for root tasks.
+#
+# Example — standalone scheduled task:
+#
+#   daily_trade_cleanup:
+#     schema: bloomberg
+#     comment: "Remove trades older than 2 years"
+#     warehouse: "{warehouse}"
+#     schedule: "USING CRON 0 2 * * * UTC"
+#     enabled: false
+#     sql_statement: |
+#       DELETE FROM {database}.BLOOMBERG.BLOOMBERG_TRADES
+#       WHERE TRADE_DATE < DATEADD(YEAR, -2, CURRENT_DATE())
+#
+# Example — child task (runs after parent):
+#
+#   trade_cleanup_audit:
+#     schema: bloomberg
+#     comment: "Log cleanup results"
+#     warehouse: "{warehouse}"
+#     after: daily_trade_cleanup
+#     enabled: false
+#     sql_statement: |
+#       INSERT INTO {database}.BLOOMBERG.AUDIT_LOG (ACTION, RUN_AT)
+#       VALUES ('TRADE_CLEANUP', CURRENT_TIMESTAMP())
+#
+# Example — task with external SQL file:
+#
+#   Use sql_file instead of sql_statement to reference a .sql file.
+#   The path is relative to the repository root.
+#
+#   daily_trade_cleanup:
+#     schema: bloomberg
+#     comment: "Remove trades older than 2 years"
+#     warehouse: "{warehouse}"
+#     schedule: "USING CRON 0 2 * * * UTC"
+#     enabled: false
+#     sql_file: src/tasks/daily_trade_cleanup.sql
+# =============================================================================

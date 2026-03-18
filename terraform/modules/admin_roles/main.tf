@@ -145,6 +145,37 @@ resource "snowflake_grant_privileges_to_account_role" "cicd_pipes" {
   }
 }
 
+resource "snowflake_grant_privileges_to_account_role" "cicd_views" {
+  account_role_name = var.cicd_role_name
+  all_privileges    = true
+  on_schema_object {
+    future { object_type_plural = "VIEWS"; in_database = var.database_name }
+  }
+}
+
+resource "snowflake_grant_privileges_to_account_role" "cicd_functions" {
+  account_role_name = var.cicd_role_name
+  all_privileges    = true
+  on_schema_object {
+    future { object_type_plural = "FUNCTIONS"; in_database = var.database_name }
+  }
+}
+
+resource "snowflake_grant_privileges_to_account_role" "cicd_tasks" {
+  account_role_name = var.cicd_role_name
+  all_privileges    = true
+  on_schema_object {
+    future { object_type_plural = "TASKS"; in_database = var.database_name }
+  }
+}
+
+# Grant EXECUTE TASK so tasks can actually run
+resource "snowflake_grant_privileges_to_account_role" "cicd_execute_task" {
+  account_role_name = var.cicd_role_name
+  privileges        = ["EXECUTE TASK"]
+  on_account        = true
+}
+
 # Grant USAGE on the storage integration to the CI/CD role so it can create stages
 resource "snowflake_grant_privileges_to_account_role" "cicd_wh" {
   account_role_name = var.cicd_role_name

@@ -122,3 +122,92 @@ resource "snowflake_grant_privileges_to_account_role" "loader_future_pipes" {
     future { object_type_plural = "PIPES"; in_database = var.database_name }
   }
 }
+
+# ---------------------------------------------------------------------------
+# View Grants
+# ---------------------------------------------------------------------------
+resource "snowflake_grant_privileges_to_account_role" "transformer_views" {
+  account_role_name = var.transformer_role_name
+  privileges        = ["SELECT"]
+  on_schema_object {
+    all { object_type_plural = "VIEWS"; in_database = var.database_name }
+  }
+}
+
+resource "snowflake_grant_privileges_to_account_role" "transformer_future_views" {
+  account_role_name = var.transformer_role_name
+  privileges        = ["SELECT"]
+  on_schema_object {
+    future { object_type_plural = "VIEWS"; in_database = var.database_name }
+  }
+}
+
+resource "snowflake_grant_privileges_to_account_role" "analyst_views" {
+  account_role_name = var.analyst_role_name
+  privileges        = ["SELECT"]
+  on_schema_object {
+    all { object_type_plural = "VIEWS"; in_database = var.database_name }
+  }
+}
+
+resource "snowflake_grant_privileges_to_account_role" "analyst_future_views" {
+  account_role_name = var.analyst_role_name
+  privileges        = ["SELECT"]
+  on_schema_object {
+    future { object_type_plural = "VIEWS"; in_database = var.database_name }
+  }
+}
+
+# ---------------------------------------------------------------------------
+# Function Grants
+# ---------------------------------------------------------------------------
+resource "snowflake_grant_privileges_to_account_role" "transformer_functions" {
+  account_role_name = var.transformer_role_name
+  privileges        = ["USAGE"]
+  on_schema_object {
+    all { object_type_plural = "FUNCTIONS"; in_database = var.database_name }
+  }
+}
+
+resource "snowflake_grant_privileges_to_account_role" "transformer_future_functions" {
+  account_role_name = var.transformer_role_name
+  privileges        = ["USAGE"]
+  on_schema_object {
+    future { object_type_plural = "FUNCTIONS"; in_database = var.database_name }
+  }
+}
+
+resource "snowflake_grant_privileges_to_account_role" "analyst_functions" {
+  account_role_name = var.analyst_role_name
+  privileges        = ["USAGE"]
+  on_schema_object {
+    all { object_type_plural = "FUNCTIONS"; in_database = var.database_name }
+  }
+}
+
+resource "snowflake_grant_privileges_to_account_role" "analyst_future_functions" {
+  account_role_name = var.analyst_role_name
+  privileges        = ["USAGE"]
+  on_schema_object {
+    future { object_type_plural = "FUNCTIONS"; in_database = var.database_name }
+  }
+}
+
+# ---------------------------------------------------------------------------
+# Task Grants (TRANSFORMER operates tasks)
+# ---------------------------------------------------------------------------
+resource "snowflake_grant_privileges_to_account_role" "transformer_tasks" {
+  account_role_name = var.transformer_role_name
+  privileges        = ["OPERATE", "MONITOR"]
+  on_schema_object {
+    all { object_type_plural = "TASKS"; in_database = var.database_name }
+  }
+}
+
+resource "snowflake_grant_privileges_to_account_role" "transformer_future_tasks" {
+  account_role_name = var.transformer_role_name
+  privileges        = ["OPERATE", "MONITOR"]
+  on_schema_object {
+    future { object_type_plural = "TASKS"; in_database = var.database_name }
+  }
+}

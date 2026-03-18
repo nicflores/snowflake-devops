@@ -13,7 +13,23 @@ locals {
   transformer_role_name = upper("${var.environment}_TRANSFORMER")
   analyst_role_name     = upper("${var.environment}_ANALYST")
 
+  # Must match the naming convention in admin/locals.tf
+  warehouse_name = upper("${var.environment}_${local.name_prefix}_WH")
+
   # Shared configuration from YAML
   tables          = yamldecode(file("${path.module}/../config/tables.yaml"))
   storage_sources = yamldecode(file("${path.module}/../config/storage_sources.yaml"))
+  views           = coalesce(yamldecode(file("${path.module}/../config/views.yaml")), {})
+  functions_raw   = coalesce(yamldecode(file("${path.module}/../config/functions.yaml")), {})
+  functions = {
+    for k, v in local.functions_raw : k => merge(v, {
+      body = lookup(v, "body_file", null) != null ? file("${path.module}/../../${v.body_file}") : lookup(v, "body", "")
+    })
+  }
+  tasks_raw = coalesce(yamldecode(file("${path.module}/../config/tasks.yaml")), {})
+  tasks = {
+    for k, v in local.tasks_raw : k => merge(v, {
+      sql_statement = lookup(v, "sql_file", null) != null ? file("${path.module}/../../${v.sql_file}") : lookup(v, "sql_statement", "")
+    })
+  }
 }

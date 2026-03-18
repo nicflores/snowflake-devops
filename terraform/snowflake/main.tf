@@ -25,7 +25,44 @@ module "ingestion" {
 }
 
 # ---------------------------------------------------------------------------
-# Grants — schema/table/stage/pipe level grants to pre-existing roles
+# Views
+# ---------------------------------------------------------------------------
+module "views" {
+  source = "../modules/views"
+
+  database_name = local.database_name
+  views         = local.views
+
+  depends_on = [module.database]
+}
+
+# ---------------------------------------------------------------------------
+# Functions (SQL & Snowpark UDFs)
+# ---------------------------------------------------------------------------
+module "functions" {
+  source = "../modules/functions"
+
+  database_name = local.database_name
+  functions     = local.functions
+
+  depends_on = [module.database]
+}
+
+# ---------------------------------------------------------------------------
+# Tasks
+# ---------------------------------------------------------------------------
+module "tasks" {
+  source = "../modules/tasks"
+
+  database_name  = local.database_name
+  warehouse_name = local.warehouse_name
+  tasks          = local.tasks
+
+  depends_on = [module.database]
+}
+
+# ---------------------------------------------------------------------------
+# Grants — schema/table/stage/pipe/view/function/task level grants
 # ---------------------------------------------------------------------------
 module "dev_grants" {
   source = "../modules/dev_grants"
@@ -35,5 +72,5 @@ module "dev_grants" {
   transformer_role_name = local.transformer_role_name
   analyst_role_name     = local.analyst_role_name
 
-  depends_on = [module.database, module.ingestion]
+  depends_on = [module.database, module.ingestion, module.views, module.functions, module.tasks]
 }

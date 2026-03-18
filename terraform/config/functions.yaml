@@ -1,0 +1,75 @@
+# =============================================================================
+# Function Definitions (SQL & Snowpark UDFs)
+# =============================================================================
+#
+# Add new functions by appending entries to this file. Both DEV and PROD
+# environments read from this shared config so schemas stay in sync.
+#
+# Required fields:
+#   schema          — Schema this function belongs to
+#   comment         — Description of the function
+#   return_type     — Snowflake return type (VARCHAR, NUMBER, VARIANT, etc.)
+#   language        — SQL, PYTHON, JAVA, or JAVASCRIPT
+#   arguments       — List of argument definitions:
+#     - name: Argument name
+#       type: Snowflake data type
+#   body            — The function body
+#                     Use {database} as a placeholder — it will be replaced
+#                     with the environment-specific database name at apply time.
+#
+# Optional fields (for Snowpark / non-SQL):
+#   runtime_version — Language runtime version (e.g. "3.11" for Python)
+#   packages        — List of packages (e.g. ["snowflake-snowpark-python"])
+#   handler         — Handler function name (required for Python/Java)
+#
+# Example — SQL function:
+#
+#   calculate_trade_value:
+#     schema: bloomberg
+#     comment: "Calculate total trade value (quantity * price)"
+#     return_type: "NUMBER(18,6)"
+#     language: SQL
+#     arguments:
+#       - { name: qty,   type: "NUMBER(18,4)" }
+#       - { name: price, type: "NUMBER(18,6)" }
+#     body: |
+#       qty * price
+#
+# Example — Snowpark (Python) function with inline body:
+#
+#   normalize_security_id:
+#     schema: bloomberg
+#     comment: "Normalize security identifiers to uppercase with dashes"
+#     return_type: VARCHAR
+#     language: PYTHON
+#     runtime_version: "3.11"
+#     packages:
+#       - "snowflake-snowpark-python"
+#     handler: normalize
+#     arguments:
+#       - { name: sec_id, type: VARCHAR }
+#     body: |
+#       def normalize(sec_id):
+#           if sec_id is None:
+#               return None
+#           return sec_id.upper().replace(' ', '-')
+#
+# Example — Snowpark (Python) function with external source file:
+#
+#   Use body_file instead of body to reference a .py file. The path is
+#   relative to the repository root. This lets you run pytest, linters,
+#   and type checkers against the actual source.
+#
+#   normalize_security_id:
+#     schema: bloomberg
+#     comment: "Normalize security identifiers to uppercase with dashes"
+#     return_type: VARCHAR
+#     language: PYTHON
+#     runtime_version: "3.11"
+#     packages:
+#       - "snowflake-snowpark-python"
+#     handler: normalize
+#     arguments:
+#       - { name: sec_id, type: VARCHAR }
+#     body_file: src/functions/normalize_security_id.py
+# =============================================================================

@@ -1,0 +1,33 @@
+# =============================================================================
+# View Definitions
+# =============================================================================
+#
+# Add new views by appending entries to this file. Both DEV and PROD
+# environments read from this shared config so schemas stay in sync.
+#
+# Required fields:
+#   schema    — Schema this view belongs to (must exist via tables.yaml)
+#   comment   — Description of the view
+#   statement — The SELECT statement that defines the view
+#               Use {database} as a placeholder — it will be replaced with
+#               the environment-specific database name at apply time.
+#
+# Optional fields:
+#   is_secure — Whether this is a Snowflake secure view (default: false)
+#
+# Example — adding a new view:
+#
+#   bloomberg_trade_summary:
+#     schema: bloomberg
+#     comment: "Daily trade summary by security"
+#     is_secure: false
+#     statement: |
+#       SELECT
+#         TRADE_DATE,
+#         SECURITY_ID,
+#         COUNT(*)            AS TRADE_COUNT,
+#         SUM(QUANTITY)       AS TOTAL_QUANTITY,
+#         AVG(PRICE)          AS AVG_PRICE
+#       FROM {database}.BLOOMBERG.BLOOMBERG_TRADES
+#       GROUP BY TRADE_DATE, SECURITY_ID
+# =============================================================================
