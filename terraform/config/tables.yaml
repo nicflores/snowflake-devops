@@ -1,0 +1,52 @@
+# =============================================================================
+# Table Definitions
+# =============================================================================
+#
+# Add new tables by appending entries to this file. Both DEV and PROD
+# environments read from this shared config so schemas stay in sync.
+#
+# Required fields:
+#   schema  — Schema this table belongs to (created automatically)
+#   source  — Key from storage_sources.yaml for auto-ingest pipe
+#             Omit or leave empty ("") if no pipe is needed
+#   comment — Description of the table
+#   columns — List of column definitions:
+#     - name:     Column name (will be uppercased)
+#       type:     Snowflake data type (VARCHAR(50), NUMBER(18,4), DATE, etc.)
+#       nullable: Whether NULLs are allowed (default: true)
+#
+# Example — adding a new table:
+#
+#   bloomberg_positions:
+#     schema: bloomberg
+#     source: bloomberg_xform
+#     comment: "Bloomberg end-of-day position data"
+#     columns:
+#       - { name: AS_OF_DATE,   type: DATE,          nullable: false }
+#       - { name: SECURITY_ID,  type: "VARCHAR(50)",  nullable: false }
+#       - { name: POSITION_QTY, type: "NUMBER(18,4)", nullable: false }
+# =============================================================================
+
+bloomberg_trades:
+  schema: bloomberg
+  source: bloomberg_xform
+  comment: "Bloomberg back office trade data"
+  columns:
+    - name: TRADE_DATE
+      type: DATE
+      nullable: false
+    - name: SECURITY_ID
+      type: "VARCHAR(50)"
+      nullable: false
+    - name: TRADE_TYPE
+      type: "VARCHAR(20)"
+      nullable: false
+    - name: QUANTITY
+      type: "NUMBER(18,4)"
+      nullable: false
+    - name: PRICE
+      type: "NUMBER(18,6)"
+      nullable: false
+    - name: COUNTERPARTY
+      type: "VARCHAR(100)"
+      nullable: true

@@ -1,0 +1,43 @@
+name: "Terraform Apply — PROD"
+
+on:
+  workflow_dispatch:
+    inputs:
+      confirm:
+        description: "Type 'deploy' to confirm production deployment"
+        required: true
+
+permissions:
+  contents: read
+
+env:
+  TF_VAR_snowflake_user:        ${{ secrets.SNOWFLAKE_USER }}
+  TF_VAR_snowflake_private_key: ${{ secrets.SNOWFLAKE_PRIVATE_KEY }}
+  TF_VAR_snowflake_role:        "CICD_DEPLOY_ROLE"
+  ARM_ACCESS_KEY:                ${{ secrets.ARM_ACCESS_KEY }}
+
+jobs:
+  apply-prod:
+    name: "Apply — PROD"
+    runs-on: ubuntu-latest
+    environment: production
+    if: github.event.inputs.confirm == 'deploy'
+    defaults:
+      run:
+        working-directory: terraform/snowflake
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+
+      - name: Terraform Init
+        run: terraform init -backend-config="key=snowflake/prod/terraform.tfstate"
+
+      - name: Terraform Plan
+        run: terraform plan -var-file=environments/PROD/PROD.tfvars -no-color -input=false
+
+      - name: Terraform Apply
+        run: terraform apply -var-file=environments/PROD/PROD.tfvars -auto-approve -input=false

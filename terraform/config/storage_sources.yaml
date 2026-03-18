@@ -1,0 +1,52 @@
+# =============================================================================
+# Storage Source Definitions
+# =============================================================================
+#
+# Each entry creates a storage integration, external stage, file format,
+# and (for tables referencing it) a Snowpipe auto-ingest pipe.
+#
+# To add a new source:
+#   1. Add an entry below with a unique key
+#   2. Reference it from tables.yaml via the "source" field
+#
+# Fields:
+#   schema                — Schema where the stage & file format are created
+#   storage_account_name  — Azure storage account name
+#   container_name        — Azure blob container
+#   path_prefix           — Path prefix inside the container
+#   file_format:
+#     type                        — CSV, JSON, PARQUET, etc.
+#     skip_header                 — Number of header rows to skip (CSV only)
+#     field_delimiter             — Field delimiter character (CSV only)
+#     field_optionally_enclosed_by — Optional enclosure character (CSV only)
+#     null_if                     — Values to interpret as NULL
+#
+# Example — adding a different storage source:
+#
+#   risk_data:
+#     schema: risk
+#     storage_account_name: riskstorageacct
+#     container_name: riskcontainer
+#     path_prefix: "daily/risk_reports"
+#     file_format:
+#       type: CSV
+#       skip_header: 1
+#       field_delimiter: ","
+#       field_optionally_enclosed_by: "\""
+#       null_if: ["NULL", ""]
+# =============================================================================
+
+bloomberg_xform:
+  schema: bloomberg
+  storage_account_name: mystorageacct
+  container_name: mycontainer
+  path_prefix: "bloomberg/xform"
+  file_format:
+    type: CSV
+    skip_header: 1
+    field_delimiter: ","
+    field_optionally_enclosed_by: "\""
+    null_if:
+      - "NULL"
+      - "null"
+      - ""
