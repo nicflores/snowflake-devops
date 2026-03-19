@@ -21,7 +21,7 @@ variable "auto_suspend" {
 }
 
 variable "auto_resume" {
-  type        = bool
-  description = "Whether the warehouse automatically resumes when a query is submitted"
-  default     = true
+  type        = string
+  description = "Whether the warehouse automatically resumes when a query is submitted (true/false/default)"
+  default     = "true"
 }

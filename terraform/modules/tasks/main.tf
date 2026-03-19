@@ -19,8 +19,16 @@ resource "snowflake_task" "root" {
   name      = upper(each.key)
   comment   = each.value.comment
   warehouse = var.warehouse_name
-  schedule  = each.value.schedule
-  enabled   = each.value.enabled
+  started   = each.value.started
+
+  dynamic "schedule" {
+    for_each = each.value.schedule != null ? [each.value.schedule] : []
+    content {
+      minutes    = schedule.value.minutes
+      hours      = schedule.value.hours
+      using_cron = schedule.value.using_cron
+    }
+  }
 
   sql_statement = replace(
     replace(each.value.sql_statement, "{database}", var.database_name),
@@ -40,7 +48,7 @@ resource "snowflake_task" "child" {
   comment   = each.value.comment
   warehouse = var.warehouse_name
   after     = [snowflake_task.root[each.value.after].fully_qualified_name]
-  enabled   = each.value.enabled
+  started   = each.value.started
 
   sql_statement = replace(
     replace(each.value.sql_statement, "{database}", var.database_name),

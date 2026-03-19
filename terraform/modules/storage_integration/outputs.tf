@@ -1,11 +1,11 @@
 output "name" {
   description = "Name of the storage integration"
-  value       = snowflake_storage_integration.this.name
+  value       = snowflake_storage_integration_azure.this.name
 }
 
 output "azure_consent_url" {
   description = "Visit this URL to grant Snowflake access to your Azure storage"
-  value       = snowflake_storage_integration.this.azure_consent_url
+  value       = snowflake_storage_integration_azure.this.describe_output[0].consent_url
 }
 
 output "azure_multi_tenant_app_name" {

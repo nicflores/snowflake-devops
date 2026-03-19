@@ -10,11 +10,15 @@ variable "warehouse_name" {
 
 variable "tasks" {
   type = map(object({
-    schema        = string
-    comment       = optional(string, "")
-    schedule      = optional(string, null)
+    schema = string
+    comment = optional(string, "")
+    schedule = optional(object({
+      minutes    = optional(number, null)
+      hours      = optional(number, null)
+      using_cron = optional(string, null)
+    }), null)
     after         = optional(string, null)
-    enabled       = optional(bool, false)
+    started       = optional(bool, false)
     sql_statement = optional(string, "")
     sql_file      = optional(string, null)
   }))

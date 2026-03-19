@@ -117,7 +117,10 @@ resource "snowflake_grant_privileges_to_account_role" "cicd_tables" {
   account_role_name = var.cicd_role_name
   all_privileges    = true
   on_schema_object {
-    future { object_type_plural = "TABLES"; in_database = var.database_name }
+    future {
+      object_type_plural = "TABLES"
+      in_database        = var.database_name
+    }
   }
 }
 
@@ -125,7 +128,10 @@ resource "snowflake_grant_privileges_to_account_role" "cicd_stages" {
   account_role_name = var.cicd_role_name
   all_privileges    = true
   on_schema_object {
-    future { object_type_plural = "STAGES"; in_database = var.database_name }
+    future {
+      object_type_plural = "STAGES"
+      in_database        = var.database_name
+    }
   }
 }
 
@@ -133,7 +139,10 @@ resource "snowflake_grant_privileges_to_account_role" "cicd_file_formats" {
   account_role_name = var.cicd_role_name
   all_privileges    = true
   on_schema_object {
-    future { object_type_plural = "FILE FORMATS"; in_database = var.database_name }
+    future {
+      object_type_plural = "FILE FORMATS"
+      in_database        = var.database_name
+    }
   }
 }
 
@@ -141,7 +150,10 @@ resource "snowflake_grant_privileges_to_account_role" "cicd_pipes" {
   account_role_name = var.cicd_role_name
   all_privileges    = true
   on_schema_object {
-    future { object_type_plural = "PIPES"; in_database = var.database_name }
+    future {
+      object_type_plural = "PIPES"
+      in_database        = var.database_name
+    }
   }
 }
 
@@ -149,7 +161,10 @@ resource "snowflake_grant_privileges_to_account_role" "cicd_views" {
   account_role_name = var.cicd_role_name
   all_privileges    = true
   on_schema_object {
-    future { object_type_plural = "VIEWS"; in_database = var.database_name }
+    future {
+      object_type_plural = "VIEWS"
+      in_database        = var.database_name
+    }
   }
 }
 
@@ -157,7 +172,10 @@ resource "snowflake_grant_privileges_to_account_role" "cicd_functions" {
   account_role_name = var.cicd_role_name
   all_privileges    = true
   on_schema_object {
-    future { object_type_plural = "FUNCTIONS"; in_database = var.database_name }
+    future {
+      object_type_plural = "FUNCTIONS"
+      in_database        = var.database_name
+    }
   }
 }
 
@@ -165,7 +183,10 @@ resource "snowflake_grant_privileges_to_account_role" "cicd_tasks" {
   account_role_name = var.cicd_role_name
   all_privileges    = true
   on_schema_object {
-    future { object_type_plural = "TASKS"; in_database = var.database_name }
+    future {
+      object_type_plural = "TASKS"
+      in_database        = var.database_name
+    }
   }
 }
 

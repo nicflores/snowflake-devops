@@ -7,7 +7,7 @@ variable "views" {
   type = map(object({
     schema    = string
     comment   = optional(string, "")
-    is_secure = optional(bool, false)
+    is_secure = optional(string, "false")
     statement = string
   }))
   description = "Map of view definitions keyed by view name"

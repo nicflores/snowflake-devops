@@ -36,17 +36,17 @@
 #       null_if: ["NULL", ""]
 # =============================================================================
 
-bloomberg_xform:
-  schema: bloomberg
-  storage_account_name: mystorageacct
-  container_name: mycontainer
-  path_prefix: "bloomberg/xform"
-  file_format:
-    type: CSV
-    skip_header: 1
-    field_delimiter: ","
-    field_optionally_enclosed_by: "\""
-    null_if:
-      - "NULL"
-      - "null"
-      - ""
+# bloomberg_xform:
+#   schema: bloomberg
+#   storage_account_name: mystorageacct
+#   container_name: mycontainer
+#   path_prefix: "bloomberg/xform"
+#   file_format:
+#     type: CSV
+#     skip_header: 1
+#     field_delimiter: ","
+#     field_optionally_enclosed_by: "\""
+#     null_if:
+#       - "NULL"
+#       - "null"
+#       - ""

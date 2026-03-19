@@ -21,10 +21,13 @@
 # Set ARM_ACCESS_KEY in your environment so the azurerm backend can authenticate.
 # -----------------------------------------------------------------------------
 terraform {
-  backend "azurerm" {
-    resource_group_name  = "rg-terraform-state"   # TODO: update
-    storage_account_name = "tfstatesnowflake"      # TODO: update
-    container_name       = "tfstate"
-    # key is supplied at init time via -backend-config
+  # backend "azurerm" {
+  #   resource_group_name  = "rg-terraform-state"   # TODO: update
+  #   storage_account_name = "tfstatesnowflake"      # TODO: update
+  #   container_name       = "tfstate"
+  #   # key is supplied at init time via -backend-config
+  # }
+  backend "local" {
+    path = "terraform.tfstate"
   }
 }
