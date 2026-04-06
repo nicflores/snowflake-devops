@@ -38,5 +38,7 @@ provider "snowflake" {
     "snowflake_pipe_resource",
     "snowflake_function_sql_resource",
     "snowflake_function_python_resource",
+    "snowflake_procedure_sql_resource",
+    "snowflake_procedure_python_resource",
   ]
 }

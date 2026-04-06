@@ -33,4 +33,10 @@ locals {
       sql_statement = lookup(v, "sql_file", null) != null ? file("${path.module}/../../${v.sql_file}") : lookup(v, "sql_statement", "")
     })
   }
+  procedures_raw = try(yamldecode(file("${path.module}/../config/procedures.yaml")), {})
+  procedures = {
+    for k, v in local.procedures_raw : k => merge(v, {
+      body = lookup(v, "body_file", null) != null ? file("${path.module}/../../${v.body_file}") : lookup(v, "body", "")
+    })
+  }
 }

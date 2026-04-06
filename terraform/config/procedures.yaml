@@ -1,0 +1,62 @@
+# =============================================================================
+# Procedure Definitions (SQL & Snowpark Stored Procedures)
+# =============================================================================
+#
+# Add new procedures by appending entries to this file. Both DEV and PROD
+# environments read from this shared config so schemas stay in sync.
+#
+# Required fields:
+#   schema          — Schema this procedure belongs to
+#   comment         — Description of the procedure
+#   return_type     — Snowflake return type (VARCHAR, NUMBER, VARIANT, etc.)
+#   language        — SQL or PYTHON
+#   arguments       — List of argument definitions:
+#     - name: Argument name
+#       type: Snowflake data type
+#   body            — The procedure body (inline)
+#                     Use {database} as a placeholder — it will be replaced
+#                     with the environment-specific database name at apply time.
+#
+# Optional fields:
+#   body_file       — Path (relative to repo root) to an external file
+#                     containing the procedure body. Overrides body if set.
+#   execute_as      — OWNER (default) or CALLER
+#   null_input_behavior — CALLED ON NULL INPUT (default) or RETURNS NULL ON NULL INPUT
+#   runtime_version — Language runtime version (e.g. "3.11" for Python)
+#   packages        — List of packages (e.g. ["snowflake-snowpark-python"])
+#   handler         — Handler function name (required for Python)
+#
+# Example — SQL procedure:
+#
+#   refresh_bloomberg_summary:
+#     schema: bloomberg
+#     comment: "Rebuilds the bloomberg_summary table from raw trades"
+#     return_type: VARCHAR
+#     language: SQL
+#     execute_as: CALLER
+#     arguments:
+#       - { name: run_date, type: DATE }
+#     body: |
+#       BEGIN
+#         DELETE FROM {database}.bloomberg.bloomberg_summary WHERE as_of_date = :run_date;
+#         INSERT INTO {database}.bloomberg.bloomberg_summary
+#           SELECT ...
+#           FROM {database}.bloomberg.bloomberg_trades
+#           WHERE as_of_date = :run_date;
+#         RETURN 'SUCCESS';
+#       END;
+#
+# Example — Python procedure with external body file:
+#
+#   validate_positions:
+#     schema: bloomberg
+#     comment: "Validates position data integrity"
+#     return_type: VARCHAR
+#     language: PYTHON
+#     runtime_version: "3.11"
+#     packages: ["snowflake-snowpark-python"]
+#     handler: main
+#     arguments:
+#       - { name: run_date, type: DATE }
+#     body_file: src/procedures/validate_positions.py
+# =============================================================================

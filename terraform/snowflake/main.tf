@@ -60,7 +60,19 @@ module "tables" {
 # }
 
 # ---------------------------------------------------------------------------
-# Grants — schema/table/stage/pipe/view/function/task level grants
+# Procedures (SQL & Snowpark Stored Procedures)
+# ---------------------------------------------------------------------------
+# module "procedures" {
+#   source = "../modules/procedures"
+#
+#   database_name = local.database_name
+#   procedures    = local.procedures
+#
+#   depends_on = [module.tables]
+# }
+
+# ---------------------------------------------------------------------------
+# Grants — schema/table/stage/pipe/view/function/procedure/task level grants
 # ---------------------------------------------------------------------------
 # module "dev_grants" {
 #   source = "../modules/dev_grants"
