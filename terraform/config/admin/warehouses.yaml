@@ -1,0 +1,27 @@
+# =============================================================================
+# Warehouse Definitions
+# =============================================================================
+#
+# Each entry creates a Snowflake warehouse. The actual warehouse name is
+# derived as {ENVIRONMENT}_{KEY}_WH.
+#
+# Required fields:
+#   comment         — Description of the warehouse
+#
+# Optional fields:
+#   warehouse_size  — Snowflake warehouse size (default: uses environment tfvars)
+#   auto_suspend    — Seconds of inactivity before auto-suspend (default: 60)
+#   auto_resume     — Whether to auto-resume on query (default: true)
+#
+# Example — adding a new warehouse:
+#
+#   analytics:
+#     comment: "Warehouse for analyst and BI workloads"
+#     auto_suspend: 120
+#     auto_resume: true
+# =============================================================================
+
+backoffice:
+  comment: "Main warehouse for back office operations"
+  auto_suspend: 60
+  auto_resume: true

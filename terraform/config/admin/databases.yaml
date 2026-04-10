@@ -1,0 +1,21 @@
+# =============================================================================
+# Database Definitions
+# =============================================================================
+#
+# Each entry creates a Snowflake database. The actual database name is
+# derived as {ENVIRONMENT}_{KEY}_DB.
+#
+# Required fields:
+#   comment — Description of the database
+#
+# Example — adding a new database:
+#
+#   risk:
+#     comment: "Risk management data"
+#
+#   reference:
+#     comment: "Shared reference / lookup data"
+# =============================================================================
+
+backoffice:
+  comment: "Back office data"

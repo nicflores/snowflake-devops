@@ -7,7 +7,7 @@
 #
 # Required fields:
 #   schema  — Schema this table belongs to (created automatically)
-#   source  — Key from storage_sources.yaml for auto-ingest pipe
+#   source  — Key from admin/storage_sources.yaml for auto-ingest pipe
 #             Omit or leave empty ("") if no pipe is needed
 #   comment — Description of the table
 #   columns — List of column definitions:

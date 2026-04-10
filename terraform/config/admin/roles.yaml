@@ -1,0 +1,95 @@
+# =============================================================================
+# Role Definitions & Hierarchy
+# =============================================================================
+#
+# Each entry defines a Snowflake role, its hierarchy (parent), and its
+# warehouse/database-level grants. Warehouse and database keys reference
+# entries in warehouses.yaml and databases.yaml respectively.
+#
+# The actual role name is derived as {ENVIRONMENT}_{KEY} (e.g. DEV_LOADER).
+# For pre-existing roles (create: false), specify role_name explicitly.
+#
+# Required fields:
+#   comment — Description of the role
+#
+# Optional fields:
+#   create              — Whether to create this role (default: true).
+#                         Set to false for pre-existing roles like CI/CD.
+#   role_name           — Explicit Snowflake role name (required when create: false)
+#   parent_role         — Parent role for hierarchy (e.g. SYSADMIN)
+#   warehouses          — Map of warehouse key → list of privileges
+#   databases           — Map of database key → list of privileges
+#                         Use ["ALL"] for all privileges on the database
+#   account_privileges  — List of account-level privileges (e.g. EXECUTE TASK)
+#   future_grants       — Map of database key → list of object types to grant
+#                         ALL PRIVILEGES on future objects. Use SCHEMAS for
+#                         future schemas; other values create future object
+#                         grants (TABLES, VIEWS, STAGES, etc.)
+#
+# Example — adding a new business role:
+#
+#   data_engineer:
+#     comment: "Data engineering role with broad write access"
+#     parent_role: SYSADMIN
+#     warehouses:
+#       backoffice: ["USAGE"]
+#       analytics:  ["USAGE"]
+#     databases:
+#       backoffice: ["USAGE"]
+#
+# Example — pre-existing role that just needs grants:
+#
+#   service_account:
+#     comment: "External service account role"
+#     create: false
+#     role_name: SVC_EXTERNAL_ROLE
+#     warehouses:
+#       backoffice: ["USAGE"]
+#     databases:
+#       backoffice: ["USAGE"]
+# =============================================================================
+
+loader:
+  comment: "Data loading role"
+  parent_role: SYSADMIN
+  warehouses:
+    backoffice: ["USAGE"]
+  databases:
+    backoffice: ["USAGE"]
+
+transformer:
+  comment: "Data transformation role"
+  parent_role: SYSADMIN
+  warehouses:
+    backoffice: ["USAGE"]
+  databases:
+    backoffice: ["USAGE"]
+
+analyst:
+  comment: "Read-only analyst role"
+  parent_role: SYSADMIN
+  warehouses:
+    backoffice: ["USAGE"]
+  databases:
+    backoffice: ["USAGE"]
+
+cicd_deploy:
+  comment: "CI/CD deployment role for Terraform automation"
+  create: false
+  role_name: CICD_DEPLOY_ROLE
+  warehouses:
+    backoffice: ["USAGE"]
+  databases:
+    backoffice: ["ALL"]
+  account_privileges:
+    - "EXECUTE TASK"
+  future_grants:
+    backoffice:
+      - SCHEMAS
+      - TABLES
+      - STAGES
+      - FILE FORMATS
+      - PIPES
+      - VIEWS
+      - FUNCTIONS
+      - TASKS

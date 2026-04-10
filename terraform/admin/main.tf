@@ -1,20 +1,23 @@
 # ---------------------------------------------------------------------------
-# Warehouse
+# Warehouses (config-driven from admin/warehouses.yaml)
 # ---------------------------------------------------------------------------
 module "warehouse" {
-  source = "../modules/warehouse"
+  source   = "../modules/warehouse"
+  for_each = local.warehouses
 
-  name           = local.warehouse_name
+  name           = upper("${var.environment}_${upper(each.key)}_WH")
   environment    = var.environment
   warehouse_size = var.warehouse_size
 }
 
 # ---------------------------------------------------------------------------
-# Database (shell only — schemas/tables managed by developer tier)
+# Databases (config-driven from admin/databases.yaml)
 # ---------------------------------------------------------------------------
-resource "snowflake_database" "this" {
-  name    = local.database_name
-  comment = "${local.database_name} — ${upper(var.environment)} environment"
+module "databases" {
+  source = "../modules/databases"
+
+  environment = var.environment
+  databases   = local.databases
 }
 
 # ---------------------------------------------------------------------------
@@ -39,14 +42,15 @@ resource "snowflake_grant_privileges_to_account_role" "cicd_integration" {
 }
 
 # ---------------------------------------------------------------------------
-# Roles & Grants (role creation, hierarchy, WH/DB level grants)
+# Roles & Grants (config-driven from admin/roles.yaml)
 # ---------------------------------------------------------------------------
 module "admin_roles" {
   source = "../modules/admin_roles"
 
-  environment    = var.environment
-  database_name  = snowflake_database.this.name
-  warehouse_name = module.warehouse.name
+  environment     = var.environment
+  roles           = local.roles
+  warehouse_names = { for k, v in module.warehouse : k => v.name }
+  database_names  = module.databases.database_names
 
-  depends_on = [snowflake_database.this]
+  depends_on = [module.databases, module.warehouse]
 }

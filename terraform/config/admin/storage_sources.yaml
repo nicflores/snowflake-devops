@@ -7,7 +7,7 @@
 #
 # To add a new source:
 #   1. Add an entry below with a unique key
-#   2. Reference it from tables.yaml via the "source" field
+#   2. Reference it from developers/tables.yaml via the "source" field
 #
 # Fields:
 #   schema                — Schema where the stage & file format are created

@@ -2,14 +2,11 @@
 # Computed values used across admin modules
 # ---------------------------------------------------------------------------
 locals {
-  name_prefix = "BACKOFFICE"
-
-  # Computed resource names — centralised naming convention
-  database_name  = upper("${var.environment}_${local.name_prefix}_DB")
-  warehouse_name = upper("${var.environment}_${local.name_prefix}_WH")
-
-  # Shared configuration from YAML (for deriving allowed storage locations)
-  storage_sources = yamldecode(file("${path.module}/../config/storage_sources.yaml"))
+  # Admin configuration from YAML
+  databases       = try(yamldecode(file("${path.module}/../config/admin/databases.yaml")), {})
+  warehouses      = try(yamldecode(file("${path.module}/../config/admin/warehouses.yaml")), {})
+  storage_sources = try(yamldecode(file("${path.module}/../config/admin/storage_sources.yaml")), {})
+  roles           = try(yamldecode(file("${path.module}/../config/admin/roles.yaml")), {})
 
   # Derive Azure blob container URLs for the storage integration
   storage_allowed_locations = distinct([

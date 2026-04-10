@@ -3,18 +3,17 @@ variable "environment" {
   description = "Environment name (DEV, PROD, UAT, etc.)"
 }
 
-variable "database_name" {
-  type        = string
-  description = "Name of the database to grant access to"
+variable "roles" {
+  type        = map(any)
+  description = "Map of role definitions from roles.yaml"
 }
 
-variable "warehouse_name" {
-  type        = string
-  description = "Name of the warehouse to grant usage on"
+variable "warehouse_names" {
+  type        = map(string)
+  description = "Map of warehouse keys to their Snowflake names"
 }
 
-variable "cicd_role_name" {
-  type        = string
-  description = "Name of the CI/CD deploy role that needs ownership grants on the database"
-  default     = "CICD_DEPLOY_ROLE"
+variable "database_names" {
+  type        = map(string)
+  description = "Map of database keys to their Snowflake names"
 }

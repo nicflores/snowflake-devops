@@ -1,9 +1,9 @@
-output "warehouse_name" {
-  value = module.warehouse.name
+output "warehouse_names" {
+  value = { for k, v in module.warehouse : k => v.name }
 }
 
-output "database_name" {
-  value = snowflake_database.this.name
+output "database_names" {
+  value = module.databases.database_names
 }
 
 output "storage_integration_name" {
@@ -20,14 +20,7 @@ output "azure_multi_tenant_app_name" {
   value       = module.storage_integration.azure_multi_tenant_app_name
 }
 
-output "loader_role" {
-  value = module.admin_roles.loader_role_name
-}
-
-output "transformer_role" {
-  value = module.admin_roles.transformer_role_name
-}
-
-output "analyst_role" {
-  value = module.admin_roles.analyst_role_name
+output "role_names" {
+  description = "Map of role keys to their Snowflake role names"
+  value       = module.admin_roles.role_names
 }
