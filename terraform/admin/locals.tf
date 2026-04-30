@@ -2,15 +2,15 @@
 # Computed values used across admin modules
 # ---------------------------------------------------------------------------
 locals {
-  # Admin configuration from YAML
-  databases       = try(yamldecode(file("${path.module}/../config/admin/databases.yaml")), {})
-  warehouses      = try(yamldecode(file("${path.module}/../config/admin/warehouses.yaml")), {})
-  storage_sources = try(yamldecode(file("${path.module}/../config/admin/storage_sources.yaml")), {})
-  roles           = try(yamldecode(file("${path.module}/../config/admin/roles.yaml")), {})
+  # Single source of truth: databases.yaml defines every database and its warehouse
+  config = try(tomap(yamldecode(file("${path.module}/config/databases.yaml"))), {})
 
-  # Derive Azure blob container URLs for the storage integration
-  storage_allowed_locations = distinct([
-    for key, src in local.storage_sources :
-    "azure://${src.storage_account_name}.blob.core.windows.net/${src.container_name}/"
-  ])
+  # Pass the full config to modules — extra keys (warehouse) are ignored by each module
+  databases = local.config
+
+  # Extract the warehouse block nested under each database entry
+  warehouses = {
+    for k, v in local.config : k => v.warehouse
+    if lookup(v, "warehouse", null) != null
+  }
 }

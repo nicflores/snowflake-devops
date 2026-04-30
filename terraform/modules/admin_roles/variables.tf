@@ -4,7 +4,7 @@ variable "environment" {
 }
 
 variable "roles" {
-  type        = map(any)
+  type        = any
   description = "Map of role definitions from roles.yaml"
 }
 

@@ -10,7 +10,7 @@ variable "warehouse_name" {
 
 variable "tasks" {
   type = map(object({
-    schema = string
+    schema  = string
     comment = optional(string, "")
     schedule = optional(object({
       minutes    = optional(number, null)

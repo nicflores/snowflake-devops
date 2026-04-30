@@ -1,0 +1,62 @@
+# =============================================================================
+# Database Definitions
+# =============================================================================
+#
+# Each entry is a complete description of one database and its warehouse.
+# This mirrors the sequence in snowflake_admin.sql: every new database gets
+# a warehouse, account roles (ADMIN/DEPLOY), managed-access schemas, and a
+# full RO/RW/DDL database role hierarchy — all applied automatically by the
+# database_bootstrap module.
+#
+# ─── Database fields ─────────────────────────────────────────────────────────
+#   comment               — Description of the database (required)
+#   name                  — Optional base name; env_prefix is always prepended
+#                           e.g. "CUSIP" → D_CUSIP (DEV) / P_CUSIP (PROD)
+#                           Default: uppercase of the entry key (e.g. key "cusip" → D_CUSIP)
+#   role_prefix           — Base prefix for generated roles; env_prefix is prepended
+#                           e.g. "CUSIP" → D_CUSIP (DEV) / P_CUSIP (PROD)
+#                           Default: database name (e.g. D_CUSIP)
+#   app_admin_parent_role — Enterprise app-admin role that inherits {PREFIX}_ADMIN
+#                           (default: SYSADMIN)
+#   cicd_role_name        — CI/CD account role that inherits {PREFIX}_DEPLOY and
+#                           {PREFIX}_RO (default: CICD_DEPLOY_ROLE)
+#   schemas               — Managed-access schemas to create
+#                           (default: [RAW, UTIL, AUDIT, CDC, CURATED])
+#
+# ─── Warehouse fields (nested under each database) ───────────────────────────
+#   comment           — Description of the warehouse (required)
+#   name              — Optional base name; env_prefix is always prepended
+#                       Default: uppercase of the database key + _WH (e.g. D_CUSIP_WH)
+#   warehouse_size    — Snowflake size (default: var.warehouse_size from tfvars)
+#   warehouse_type    — STANDARD or SNOWPARK-OPTIMIZED (default: STANDARD)
+#   auto_suspend      — Idle seconds before auto-suspend (default: 60)
+#   auto_resume       — Auto-resume on query (default: true)
+#   min_cluster_count — Minimum clusters for multi-cluster warehouses
+#   max_cluster_count — Maximum clusters for multi-cluster warehouses
+#   scaling_policy    — STANDARD or ECONOMY
+#
+# ─── Example — adding a new database ─────────────────────────────────────────
+#
+#   risk:
+#     comment: "Risk management data"
+#     cicd_role_name: CICD_DEPLOY_ROLE
+#     warehouse:
+#       comment: "Warehouse for risk workloads"
+#       auto_suspend: 120
+# =============================================================================
+
+cusip:
+  comment: "CUSIP data platform database"
+  role_prefix: CUSIP
+  app_admin_parent_role: AUH-D-D-SNW-APPADMIN
+  cicd_role_name: AUH-A-D-CICD-SF-DEVOPS
+  schemas: [RAW, UTIL, AUDIT, CDC, CURATED]
+  warehouse:
+    comment: "Warehouse for xsmall production compute"
+    warehouse_type: STANDARD
+    warehouse_size: XSMALL
+    auto_suspend: 600
+    auto_resume: true
+    min_cluster_count: 1
+    max_cluster_count: 1
+    scaling_policy: ECONOMY

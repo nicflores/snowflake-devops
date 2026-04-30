@@ -3,8 +3,8 @@
 # -----------------------------------------------------------------------------
 # The state file key is set per environment during `terraform init`:
 #
-#   terraform init -backend-config="key=snowflake/dev/terraform.tfstate"
-#   terraform init -backend-config="key=snowflake/prod/terraform.tfstate"
+#   terraform init -backend-config="key=developer/dev/terraform.tfstate"
+#   terraform init -backend-config="key=developer/prod/terraform.tfstate"
 #
 # Before first run, create the backend resources:
 #

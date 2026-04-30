@@ -19,19 +19,16 @@ variable "snowflake_role" {
 }
 
 # ---------------------------------------------------------------------------
-# Azure
-# ---------------------------------------------------------------------------
-variable "azure_tenant_id" {
-  type        = string
-  description = "Azure AD tenant ID for the Snowflake storage integration"
-}
-
-# ---------------------------------------------------------------------------
 # Environment
 # ---------------------------------------------------------------------------
 variable "environment" {
   type        = string
   description = "Environment name (DEV, PROD, UAT, etc.)"
+}
+
+variable "env_prefix" {
+  type        = string
+  description = "Single-character prefix prepended to all Snowflake object names (e.g. D for DEV, P for PROD)"
 }
 
 variable "warehouse_size" {

@@ -1,56 +1,46 @@
 # ---------------------------------------------------------------------------
-# Warehouses (config-driven from admin/warehouses.yaml)
+# Warehouses (one per database, defined in databases.yaml)
 # ---------------------------------------------------------------------------
 module "warehouse" {
   source   = "../modules/warehouse"
   for_each = local.warehouses
 
-  name           = upper("${var.environment}_${upper(each.key)}_WH")
-  environment    = var.environment
-  warehouse_size = var.warehouse_size
+  name              = upper("${var.env_prefix}_${lookup(each.value, "name", "${upper(each.key)}_WH")}")
+  warehouse_size    = lookup(each.value, "warehouse_size", var.warehouse_size)
+  warehouse_type    = lookup(each.value, "warehouse_type", "STANDARD")
+  auto_suspend      = lookup(each.value, "auto_suspend", 60)
+  auto_resume       = tostring(lookup(each.value, "auto_resume", true))
+  min_cluster_count = lookup(each.value, "min_cluster_count", 1)
+  max_cluster_count = lookup(each.value, "max_cluster_count", 1)
+  scaling_policy    = lookup(each.value, "scaling_policy", "STANDARD")
+  comment           = lookup(each.value, "comment", null)
 }
 
 # ---------------------------------------------------------------------------
-# Databases (config-driven from admin/databases.yaml)
+# Databases
 # ---------------------------------------------------------------------------
 module "databases" {
   source = "../modules/databases"
 
   environment = var.environment
+  env_prefix  = var.env_prefix
   databases   = local.databases
 }
 
 # ---------------------------------------------------------------------------
-# Storage Integration
+# Security bootstrap — account roles, schemas, and database role hierarchy
+# Applied to every database, matching the pattern in snowflake_admin.sql
 # ---------------------------------------------------------------------------
-module "storage_integration" {
-  source = "../modules/storage_integration"
+module "database_bootstrap" {
+  source   = "../modules/database_bootstrap"
+  for_each = local.databases
 
-  environment               = var.environment
-  azure_tenant_id           = var.azure_tenant_id
-  storage_allowed_locations = local.storage_allowed_locations
-}
-
-# Grant USAGE on the storage integration to the CI/CD role
-resource "snowflake_grant_privileges_to_account_role" "cicd_integration" {
-  account_role_name = "CICD_DEPLOY_ROLE"
-  privileges        = ["USAGE"]
-  on_account_object {
-    object_type = "INTEGRATION"
-    object_name = module.storage_integration.name
-  }
-}
-
-# ---------------------------------------------------------------------------
-# Roles & Grants (config-driven from admin/roles.yaml)
-# ---------------------------------------------------------------------------
-module "admin_roles" {
-  source = "../modules/admin_roles"
-
-  environment     = var.environment
-  roles           = local.roles
-  warehouse_names = { for k, v in module.warehouse : k => v.name }
-  database_names  = module.databases.database_names
+  database_name         = module.databases.database_names[each.key]
+  role_prefix           = lookup(each.value, "role_prefix", null) != null ? upper("${var.env_prefix}_${each.value.role_prefix}") : upper(module.databases.database_names[each.key])
+  app_admin_parent_role = lookup(each.value, "app_admin_parent_role", "SYSADMIN")
+  cicd_role_name        = lookup(each.value, "cicd_role_name", "CICD_DEPLOY_ROLE")
+  warehouse_name        = module.warehouse[each.key].name
+  schemas               = [for s in lookup(each.value, "schemas", ["RAW", "UTIL", "AUDIT", "CDC", "CURATED"]) : upper(s)]
 
   depends_on = [module.databases, module.warehouse]
 }
