@@ -11,7 +11,7 @@ locals {
 resource "snowflake_file_format" "this" {
   for_each = var.storage_sources
 
-  database = var.database_name
+  database = each.value.database_name
   schema   = upper(each.value.schema)
   name     = upper("${each.key}_FORMAT")
 
@@ -28,7 +28,7 @@ resource "snowflake_file_format" "this" {
 resource "snowflake_stage" "this" {
   for_each = var.storage_sources
 
-  database            = var.database_name
+  database            = each.value.database_name
   schema              = upper(each.value.schema)
   name                = upper("${each.key}_STAGE")
   url                 = "azure://${each.value.storage_account_name}.blob.core.windows.net/${each.value.container_name}/${each.value.path_prefix}/"
@@ -41,16 +41,16 @@ resource "snowflake_stage" "this" {
 resource "snowflake_pipe" "this" {
   for_each = local.tables_with_source
 
-  database = var.database_name
+  database = each.value.database_name
   schema   = upper(each.value.schema)
   name     = upper("${each.key}_PIPE")
 
   auto_ingest = true
 
   copy_statement = join(" ", [
-    "COPY INTO ${var.database_name}.${upper(each.value.schema)}.${upper(each.key)}",
-    "FROM @${var.database_name}.${upper(each.value.schema)}.${upper(each.value.source)}_STAGE",
-    "FILE_FORMAT = (FORMAT_NAME = '${var.database_name}.${upper(each.value.schema)}.${upper(each.value.source)}_FORMAT')",
+    "COPY INTO ${each.value.database_name}.${upper(each.value.schema)}.${upper(each.key)}",
+    "FROM @${each.value.database_name}.${upper(each.value.schema)}.${upper(each.value.source)}_STAGE",
+    "FILE_FORMAT = (FORMAT_NAME = '${each.value.database_name}.${upper(each.value.schema)}.${upper(each.value.source)}_FORMAT')",
   ])
 
   depends_on = [

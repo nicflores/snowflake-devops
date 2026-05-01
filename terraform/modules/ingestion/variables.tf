@@ -1,13 +1,3 @@
-variable "environment" {
-  type        = string
-  description = "Environment name (DEV, PROD, UAT, etc.)"
-}
-
-variable "database_name" {
-  type        = string
-  description = "Name of the Snowflake database (pre-created by admin)"
-}
-
 variable "storage_integration_name" {
   type        = string
   description = "Name of the pre-existing storage integration (created by admin)"
@@ -15,6 +5,8 @@ variable "storage_integration_name" {
 
 variable "storage_sources" {
   type = map(object({
+    database             = optional(string, "")
+    database_name        = string
     schema               = string
     storage_account_name = string
     container_name       = string
@@ -32,9 +24,11 @@ variable "storage_sources" {
 
 variable "tables" {
   type = map(object({
-    schema  = string
-    source  = optional(string, "")
-    comment = optional(string, "")
+    database      = optional(string, "")
+    database_name = string
+    schema        = string
+    source        = optional(string, "")
+    comment       = optional(string, "")
     columns = list(object({
       name     = string
       type     = string
