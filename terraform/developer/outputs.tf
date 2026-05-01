@@ -1,7 +1,3 @@
-output "database_name" {
-  value = local.database_name
-}
-
 output "schema_names" {
   value = module.tables.schema_names
 }

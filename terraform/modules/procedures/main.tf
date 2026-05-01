@@ -13,13 +13,13 @@ locals {
 resource "snowflake_procedure_sql" "this" {
   for_each = local.sql_procedures
 
-  database = var.database_name
+  database = each.value.database_name
   schema   = upper(each.value.schema)
   name     = upper(each.key)
   comment  = each.value.comment
 
   return_type          = each.value.return_type
-  procedure_definition = replace(each.value.body, "{database}", var.database_name)
+  procedure_definition = replace(each.value.body, "{database}", each.value.database_name)
   execute_as           = each.value.execute_as
   null_input_behavior  = each.value.null_input_behavior
 
@@ -38,7 +38,7 @@ resource "snowflake_procedure_sql" "this" {
 resource "snowflake_procedure_python" "this" {
   for_each = local.python_procedures
 
-  database = var.database_name
+  database = each.value.database_name
   schema   = upper(each.value.schema)
   name     = upper(each.key)
   comment  = each.value.comment
@@ -48,7 +48,7 @@ resource "snowflake_procedure_python" "this" {
   handler              = each.value.handler
   snowpark_package     = each.value.snowpark_package
   packages             = each.value.packages
-  procedure_definition = replace(each.value.body, "{database}", var.database_name)
+  procedure_definition = replace(each.value.body, "{database}", each.value.database_name)
   execute_as           = each.value.execute_as
   null_input_behavior  = each.value.null_input_behavior
 

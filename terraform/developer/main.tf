@@ -5,8 +5,7 @@
 module "tables" {
   source = "../modules/tables"
 
-  database_name = local.database_name
-  tables        = local.tables
+  tables = local.tables
 }
 
 # ---------------------------------------------------------------------------
@@ -15,8 +14,7 @@ module "tables" {
 module "views" {
   source = "../modules/views"
 
-  database_name = local.database_name
-  views         = local.views
+  views = local.views
 
   depends_on = [module.tables]
 }
@@ -27,8 +25,7 @@ module "views" {
 module "functions" {
   source = "../modules/functions"
 
-  database_name = local.database_name
-  functions     = local.functions
+  functions = local.functions
 
   depends_on = [module.tables]
 }
@@ -39,8 +36,7 @@ module "functions" {
 module "procedures" {
   source = "../modules/procedures"
 
-  database_name = local.database_name
-  procedures    = local.procedures
+  procedures = local.procedures
 
   depends_on = [module.tables]
 }
@@ -51,9 +47,7 @@ module "procedures" {
 module "tasks" {
   source = "../modules/tasks"
 
-  database_name  = local.database_name
-  warehouse_name = local.warehouse_name
-  tasks          = local.tasks
+  tasks = local.tasks
 
   depends_on = [module.tables]
 }
@@ -66,7 +60,6 @@ module "tasks" {
 #   source = "../modules/ingestion"
 #
 #   environment              = var.environment
-#   database_name            = local.database_name
 #   storage_integration_name = "<INTEGRATION_NAME>"
 #   storage_sources          = local.storage_sources
 #   tables                   = local.tables

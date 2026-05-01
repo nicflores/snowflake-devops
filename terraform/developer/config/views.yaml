@@ -6,6 +6,8 @@
 # environments read from this shared config so schemas stay in sync.
 #
 # Required fields:
+#   database  — Base database name (env_prefix is prepended automatically,
+#               e.g. "CUSIP" → D_CUSIP in DEV, P_CUSIP in PROD)
 #   schema    — Schema this view belongs to (must exist via tables.yaml)
 #   comment   — Description of the view
 #   statement — The SELECT statement that defines the view
@@ -18,6 +20,7 @@
 # Example — adding a new view:
 #
 #   bloomberg_trade_summary:
+#     database: CUSIP
 #     schema: bloomberg
 #     comment: "Daily trade summary by security"
 #     is_secure: false

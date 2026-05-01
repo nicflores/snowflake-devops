@@ -1,10 +1,5 @@
-output "database_name" {
-  description = "The name of the database"
-  value       = var.database_name
-}
-
 output "schema_names" {
-  description = "Map of schema keys to their Snowflake names"
+  description = "Map of schema keys (DATABASE__SCHEMA) to their Snowflake names"
   value       = { for k, v in snowflake_schema.this : k => v.name }
 }
 

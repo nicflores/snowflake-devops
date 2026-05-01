@@ -6,6 +6,8 @@
 # environments read from this shared config so schemas stay in sync.
 #
 # Required fields:
+#   database        — Base database name (env_prefix is prepended automatically,
+#                     e.g. "CUSIP" → D_CUSIP in DEV, P_CUSIP in PROD)
 #   schema          — Schema this procedure belongs to
 #   comment         — Description of the procedure
 #   return_type     — Snowflake return type (VARCHAR, NUMBER, VARIANT, etc.)
@@ -29,6 +31,7 @@
 # Example — SQL procedure:
 #
 #   refresh_bloomberg_summary:
+#     database: CUSIP
 #     schema: bloomberg
 #     comment: "Rebuilds the bloomberg_summary table from raw trades"
 #     return_type: VARCHAR
@@ -49,6 +52,7 @@
 # Example — Python procedure with external body file:
 #
 #   validate_positions:
+#     database: CUSIP
 #     schema: bloomberg
 #     comment: "Validates position data integrity"
 #     return_type: VARCHAR

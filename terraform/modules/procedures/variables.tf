@@ -1,14 +1,11 @@
-variable "database_name" {
-  type        = string
-  description = "Name of the pre-existing database"
-}
-
 variable "procedures" {
   type = map(object({
-    schema      = string
-    comment     = optional(string, "")
-    return_type = string
-    language    = string
+    database             = optional(string, "")
+    database_name        = string
+    schema               = string
+    comment              = optional(string, "")
+    return_type          = string
+    language             = string
     arguments = list(object({
       name = string
       type = string

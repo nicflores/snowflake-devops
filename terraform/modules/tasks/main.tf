@@ -14,11 +14,11 @@ locals {
 resource "snowflake_task" "root" {
   for_each = local.root_tasks
 
-  database  = var.database_name
+  database  = each.value.database_name
   schema    = upper(each.value.schema)
   name      = upper(each.key)
   comment   = each.value.comment
-  warehouse = var.warehouse_name
+  warehouse = each.value.warehouse_name
   started   = each.value.started
 
   dynamic "schedule" {
@@ -31,8 +31,8 @@ resource "snowflake_task" "root" {
   }
 
   sql_statement = replace(
-    replace(each.value.sql_statement, "{database}", var.database_name),
-    "{warehouse}", var.warehouse_name
+    replace(each.value.sql_statement, "{database}", each.value.database_name),
+    "{warehouse}", each.value.warehouse_name
   )
 }
 
@@ -42,16 +42,16 @@ resource "snowflake_task" "root" {
 resource "snowflake_task" "child" {
   for_each = local.child_tasks
 
-  database  = var.database_name
+  database  = each.value.database_name
   schema    = upper(each.value.schema)
   name      = upper(each.key)
   comment   = each.value.comment
-  warehouse = var.warehouse_name
+  warehouse = each.value.warehouse_name
   after     = [snowflake_task.root[each.value.after].fully_qualified_name]
   started   = each.value.started
 
   sql_statement = replace(
-    replace(each.value.sql_statement, "{database}", var.database_name),
-    "{warehouse}", var.warehouse_name
+    replace(each.value.sql_statement, "{database}", each.value.database_name),
+    "{warehouse}", each.value.warehouse_name
   )
 }

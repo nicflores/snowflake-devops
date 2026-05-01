@@ -1,17 +1,21 @@
 locals {
-  # Derive unique schemas from table definitions
-  schemas = distinct([for t in var.tables : t.schema])
+  # Unique (database, schema) pairs — keyed as "DATABASE__SCHEMA" for for_each
+  schema_pairs = {
+    for pair in distinct([
+      for t in var.tables : { database = t.database_name, schema = upper(t.schema) }
+    ]) : "${pair.database}__${pair.schema}" => pair
+  }
 }
 
 # ---------------------------------------------------------------------------
 # Schemas (auto-derived from table definitions)
 # ---------------------------------------------------------------------------
 resource "snowflake_schema" "this" {
-  for_each = toset(local.schemas)
+  for_each = local.schema_pairs
 
-  database = var.database_name
-  name     = upper(each.key)
-  comment  = "Schema for ${each.key} data"
+  database = each.value.database
+  name     = each.value.schema
+  comment  = "Schema for ${each.value.schema} data"
 }
 
 # ---------------------------------------------------------------------------
@@ -20,8 +24,8 @@ resource "snowflake_schema" "this" {
 resource "snowflake_table" "this" {
   for_each = var.tables
 
-  database = var.database_name
-  schema   = snowflake_schema.this[each.value.schema].name
+  database = each.value.database_name
+  schema   = snowflake_schema.this["${each.value.database_name}__${upper(each.value.schema)}"].name
   name     = upper(each.key)
   comment  = each.value.comment
 

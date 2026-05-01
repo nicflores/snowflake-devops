@@ -1,17 +1,11 @@
-variable "database_name" {
-  type        = string
-  description = "Name of the pre-existing database"
-}
-
-variable "warehouse_name" {
-  type        = string
-  description = "Name of the pre-existing warehouse (for task execution)"
-}
-
 variable "tasks" {
   type = map(object({
-    schema  = string
-    comment = optional(string, "")
+    database       = optional(string, "")
+    database_name  = string
+    warehouse      = optional(string, "")
+    warehouse_name = string
+    schema         = string
+    comment        = optional(string, "")
     schedule = optional(object({
       minutes    = optional(number, null)
       hours      = optional(number, null)

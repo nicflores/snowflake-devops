@@ -6,6 +6,8 @@
 # environments read from this shared config so schemas stay in sync.
 #
 # Required fields:
+#   database        — Base database name (env_prefix is prepended automatically,
+#                     e.g. "CUSIP" → D_CUSIP in DEV, P_CUSIP in PROD)
 #   schema          — Schema this function belongs to
 #   comment         — Description of the function
 #   return_type     — Snowflake return type (VARCHAR, NUMBER, VARIANT, etc.)
@@ -25,6 +27,7 @@
 # Example — SQL function:
 #
 #   calculate_trade_value:
+#     database: CUSIP
 #     schema: bloomberg
 #     comment: "Calculate total trade value (quantity * price)"
 #     return_type: "NUMBER(18,6)"
@@ -38,6 +41,7 @@
 # Example — Snowpark (Python) function with inline body:
 #
 #   normalize_security_id:
+#     database: CUSIP
 #     schema: bloomberg
 #     comment: "Normalize security identifiers to uppercase with dashes"
 #     return_type: VARCHAR
@@ -61,6 +65,7 @@
 #   and type checkers against the actual source.
 #
 #   normalize_security_id:
+#     database: CUSIP
 #     schema: bloomberg
 #     comment: "Normalize security identifiers to uppercase with dashes"
 #     return_type: VARCHAR
